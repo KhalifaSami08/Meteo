@@ -1,0 +1,12 @@
+C:\Users\mklfs\source\repos\Meteo\Meteo\bin\Debug\Meteo.exe.config
+C:\Users\mklfs\source\repos\Meteo\Meteo\bin\Debug\Meteo.exe
+C:\Users\mklfs\source\repos\Meteo\Meteo\bin\Debug\Meteo.pdb
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.csprojAssemblyReference.cache
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.Form1.resources
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.Properties.Resources.resources
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.csproj.GenerateResource.cache
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.exe
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.pdb
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.ConfigMeasureForm.resources
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.AlarmForm.resources
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.csproj.CoreCompileInputs.cache
