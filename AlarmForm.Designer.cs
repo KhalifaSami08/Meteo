@@ -56,6 +56,7 @@
             this.cmbID.Name = "cmbID";
             this.cmbID.Size = new System.Drawing.Size(66, 21);
             this.cmbID.TabIndex = 1;
+            this.cmbID.SelectedIndexChanged += new System.EventHandler(this.cmbID_SelectedIndexChanged);
             // 
             // lMin
             // 

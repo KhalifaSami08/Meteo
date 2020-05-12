@@ -156,7 +156,6 @@
             // 
             // cmbID
             // 
-            this.cmbID.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbID.FormattingEnabled = true;
             this.cmbID.Location = new System.Drawing.Point(41, 76);
             this.cmbID.Name = "cmbID";

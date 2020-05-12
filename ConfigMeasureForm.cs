@@ -7,32 +7,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace Meteo
 {
     public partial class ConfigMeasureForm : Form
     {
 
-        public bool formOK = false;
-        private List<Mesure> myMeasures;
-        private String[] otherMeasures = {"ID SYSTEM", "WATCHDOG" };
+        public int formType;
+        private List<Watchdog> myWatchdogs;
         public int idMesureConfigured;
 
-        private int iMin;
-        private int iMax;
+        public int iMin;
+        public int iMax;
 
-        public ConfigMeasureForm(List<Mesure> myMeasures)
+        /*public ConfigMeasureForm(List<Mesure> myMeasures)
         {
             InitializeComponent();
             this.myMeasures = myMeasures;
+        }*/
+
+        public ConfigMeasureForm(List<Watchdog> myWatchdogs,int id)
+        {
+            InitializeComponent();
+            this.myWatchdogs = myWatchdogs;
+            cmbID.Text= id+"";
+            formType = -1;
         }
 
-       private void NewMeasureForm_Load(object sender, EventArgs e)
+        private void NewMeasureForm_Load(object sender, EventArgs e)
        {
-            cmbFomat.Items.AddRange(Mesure.getFormatDispo());
+            cmbFomat.Items.AddRange(Measure.getFormatDispo());
 
-            cmbMeasureType.Items.AddRange(Mesure.getTypeMeasure());
-            cmbMeasureType.Items.AddRange(otherMeasures);
+            cmbMeasureType.Items.AddRange(Measure.getTypeMeasure());
+            cmbMeasureType.Items.AddRange(IdSys.getTypeMeasure());
 
             cmbID.Items.AddRange(getListMeasure());
 
@@ -40,11 +48,11 @@ namespace Meteo
 
         private object[] getListMeasure()
         {
-            object[] lists = new object[myMeasures.Count];
+            object[] lists = new object[myWatchdogs.Count];
 
-            for (int i = 0; i < myMeasures.Count; i++)
+            for (int i = 0; i < myWatchdogs.Count; i++)
             {
-                lists[i] = myMeasures[i].ID_Measure;
+                lists[i] = myWatchdogs[i].id;
             }
             return lists;
         }
@@ -58,12 +66,20 @@ namespace Meteo
         {
             if (Check())
             {
-                formOK = true;
-                idMesureConfigured = cmbID.SelectedIndex;
-                myMeasures[idMesureConfigured].type_Measure = cmbMeasureType.SelectedItem;
-                myMeasures[idMesureConfigured].format = cmbFomat.SelectedItem;
-                myMeasures[idMesureConfigured].minValue = iMin;
-                myMeasures[idMesureConfigured].maxValue = iMax;
+                if (!(cmbMeasureType.SelectedItem.Equals(IdSys.getTypeMeasure()[0]) ||
+                      cmbMeasureType.SelectedItem.Equals(IdSys.getTypeMeasure()[1])))
+                {
+                    formType = 0;
+                    Int32.TryParse(cmbID.Text, out idMesureConfigured);
+                    
+                }
+                else
+                {
+                    formType = 1;
+                }
+
+                myWatchdogs[idMesureConfigured].type_Measure = cmbMeasureType.SelectedItem;
+                myWatchdogs[idMesureConfigured].format = cmbFomat.SelectedItem;
 
                 Close();
             }
@@ -75,30 +91,32 @@ namespace Meteo
 
         public bool Check()
         {
-            if(cmbFomat.SelectedItem is null || cmbMeasureType.SelectedItem is null || cmbID.SelectedItem is null)
+            if(cmbFomat.SelectedItem is null || cmbMeasureType.SelectedItem is null)
             {
                 //throw new Exception("One combo box is empty !");
                 MessageBox.Show("One combo box is empty !");
                 return false;
             }
 
-            try
+            if ( ! (cmbMeasureType.SelectedItem.Equals(IdSys.getTypeMeasure()[0]) || cmbMeasureType.SelectedItem.Equals(IdSys.getTypeMeasure()[1])))
             {
-                Int32.TryParse(txbMin.Text, out iMin);
-                Int32.TryParse(txbMax.Text, out iMax);
-
-                if(iMin >= iMax)
+                try
                 {
-                    MessageBox.Show("Min is higher than max ! ");
-                    return false;
-                }
+                    Int32.TryParse(txbMin.Text, out iMin);
+                    Int32.TryParse(txbMax.Text, out iMax);
 
+                    if (iMin >= iMax)
+                    {
+                        MessageBox.Show("Min is higher than max ! ");
+                        return false;
+                    }
+
+                }
+                catch
+                {
+                    throw new Exception("Min or Max are not number");
+                }
             }
-            catch
-            {
-                throw new Exception("Min or Max are not number");
-            }
-            
 
             return true;
         }
@@ -106,7 +124,7 @@ namespace Meteo
         private void cmbMeasureType_TextChanged(object sender, EventArgs e)
         {
            
-            if (cmbMeasureType.SelectedItem.Equals(otherMeasures[0]) || cmbMeasureType.SelectedItem.Equals(otherMeasures[1]))
+            if (cmbMeasureType.SelectedItem.Equals(IdSys.getTypeMeasure()[0]) || cmbMeasureType.SelectedItem.Equals(IdSys.getTypeMeasure()[1] ))
             {
                 gBoxMinMax.Visible = false;
             }

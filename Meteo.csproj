@@ -32,6 +32,28 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,13 +76,27 @@
     <Compile Include="AlarmForm.Designer.cs">
       <DependentUpon>AlarmForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConnectUserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConnectUserForm.Designer.cs">
+      <DependentUpon>ConnectUserForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CreateorRefreshGrid.cs" />
+    <Compile Include="DisConfigForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DisConfigForm.Designer.cs">
+      <DependentUpon>DisConfigForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Mesure.cs" />
+    <Compile Include="IdSys.cs" />
+    <Compile Include="Measure.cs" />
     <Compile Include="ConfigMeasureForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,8 +111,16 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="Watchdog.cs" />
     <EmbeddedResource Include="AlarmForm.resx">
       <DependentUpon>AlarmForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectUserForm.resx">
+      <DependentUpon>ConnectUserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DisConfigForm.resx">
+      <DependentUpon>DisConfigForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

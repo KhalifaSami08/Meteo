@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Meteo
 {
-    class Alarm
+    public class Alarm
     {
         public int id_Alarme;
         public String type_mesure;

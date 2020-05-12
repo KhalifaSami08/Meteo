@@ -13,15 +13,18 @@ namespace Meteo
     public partial class AlarmForm : Form
     {
         public bool valid;
-        private List<Mesure> myIdMeasuresConfigured ;
-        public Mesure m = null;
-        private Alarm a = null;
+        
+        private List<Measure> myIdMeasuresConfigured;
+        public Measure m;
+        private Alarm a;
+        private int idSelected;
+
         public int iminAlarm;
         public int imaxAlarm;
 
         internal Alarm A { get => a; set => a = value; }
 
-        public AlarmForm(List<Mesure> myMeasures)
+        public AlarmForm(List<Measure> myMeasures)
         {
             InitializeComponent();
             this.myIdMeasuresConfigured = myMeasures;
@@ -53,17 +56,8 @@ namespace Meteo
         {
             if (checkOK())
             {
-                int idSelected = Convert.ToInt32(cmbID.SelectedItem);
 
-                foreach(Mesure me in myIdMeasuresConfigured)
-                {
-                    if(idSelected == me.ID_Measure)
-                    {
-                        m = me;
-                    }
-                }
-
-                A = new Alarm(idSelected,(String)m.type_Measure, iminAlarm, imaxAlarm);
+                A = new Alarm(idSelected, (String)m.type_Measure, iminAlarm, imaxAlarm);
                 Close();
             }
             else
@@ -80,25 +74,40 @@ namespace Meteo
                 Int32.TryParse(txbMin.Text, out iminAlarm);
                 Int32.TryParse(txbMax.Text, out imaxAlarm);
 
-                if(iminAlarm >= imaxAlarm)
-                {
-                    MessageBox.Show("Min is lower than max ! ");
-                    return false;
-                }
-
             }
             catch
             {
-                throw new Exception("Min or max are not number"); 
+                throw new Exception("Min or max are not number");
             }
-            
-            if(!(cmbID.SelectedItem is null))
+
+            if (iminAlarm >= imaxAlarm || imaxAlarm < m.maxValue || iminAlarm > m.minValue)
             {
-                valid = true;
+                MessageBox.Show("Min or Max values aren't valid ! \n Max must be High than : " + m.maxValue + " \n Min must be lower than : " + m.minValue);
+
             }
+            else
+            {
+                if (!(cmbID.SelectedItem is null))
+                {
+                    valid = true;
+                }
+            }
+
 
             return valid;
         }
 
+        private void cmbID_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            idSelected = Convert.ToInt32(cmbID.SelectedItem);
+
+            foreach (Measure me in myIdMeasuresConfigured)
+            {
+                if (idSelected == me.ID_Measure)
+                {
+                    m = me;
+                }
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Meteo
 {
-    public class Mesure
+    public class Measure : Watchdog
     {
         public int ID_Measure;
         public object type_Measure;
@@ -15,11 +15,12 @@ namespace Meteo
         public int maxValue;
         public List<String> data { get; set; }
 
-        public Mesure(int ID_Measure, object type_Measure, object format, int minValue, int maxValue)
+        public Measure(int id, object type_Measure, object format, int minValue, int maxValue): base(id, type_Measure, format)
         {
-            this.ID_Measure = ID_Measure;
+            this.ID_Measure = id;
             this.type_Measure = type_Measure;
             this.format = format;
+
             this.minValue = minValue;
             this.maxValue = maxValue;
             data = new List<String>();
