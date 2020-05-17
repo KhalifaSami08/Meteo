@@ -148,7 +148,8 @@ namespace Meteo
 
         private void removeUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            RemoveUser rm = new RemoveUser(myUsers);
+            rm.ShowDialog();
         }
 
         private void bOnOff_Click(object sender, EventArgs e)
@@ -216,14 +217,6 @@ namespace Meteo
             }
 
         }
-
-        private void bAlarm_Click(object sender, EventArgs e)
-        {
-
-
-        }
-
-       
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
