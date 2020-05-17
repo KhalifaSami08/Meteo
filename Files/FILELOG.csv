@@ -1,0 +1,5 @@
+ID : ;Type : ;Format : ;Min Value : ;Max Value : ;Min Alarm : ;Max Alarm : ;
+
+0;HUMIDITY(%);8;-8;155;-2;120;	List of Data : ;	-8;	-8;	-8;	-8;	-8;	-8;	-8;	-8;	-8;	-8;	
+1;ATMOSPHERIC_PRESSURE(Pa);16;-2;155;-1;20;	List of Data : ;	155;	155;	-2;	155;	-2;	-2;	155;	155;	155;	155;	
+3;WIND_SPEED(m/s);24;-44;125;-8;12;	List of Data : ;	125;	294;	125;	125;	294;	125;	294;	294;	294;	294;	

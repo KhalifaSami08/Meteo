@@ -108,7 +108,7 @@ namespace Meteo
 
         private void dbAccess()
         {
-            string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\mklfs\\source\\repos\\Meteo\\MeteoAccessDB.accdb;Cache Authentication=True";
+            string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\mklfs\\source\\repos\\Meteo\\Meteo\\Files\\MeteoAccessDB.accdb;Cache Authentication=True";
             OleDbConnection dbConnection = new OleDbConnection(connectionString);
 
             try

@@ -94,7 +94,7 @@ namespace Meteo
 
         private void catchAllUsers()
         {
-            string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\mklfs\\source\\repos\\Meteo\\MeteoAccessDB.accdb;Cache Authentication=True";
+            string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\mklfs\\source\\repos\\Meteo\\Meteo\\Files\\MeteoAccessDB.accdb;Cache Authentication=True";
             OleDbConnection dbConnection = new OleDbConnection(connectionString);
 
             try
@@ -477,7 +477,7 @@ namespace Meteo
             }
             else
             {
-                String file = "C:\\Users\\mklfs\\source\\repos\\Meteo\\FILELOG.csv";
+                String file = "C:\\Users\\mklfs\\source\\repos\\Meteo\\Meteo\\Files\\FILELOG.csv";
                 StreamWriter sw = new StreamWriter(file);
 
                 sw.Write("ID : ;");
@@ -538,7 +538,7 @@ namespace Meteo
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            String file = "C:\\Users\\mklfs\\source\\repos\\Meteo\\FILELOG.csv";
+            String file = "C:\\Users\\mklfs\\source\\repos\\Meteo\\Meteo\\Files\\FILELOG.csv";
                 myWatchdogs.Clear();
                 myMeasuresConfigured.Clear();
                 myAlarm.Clear();
