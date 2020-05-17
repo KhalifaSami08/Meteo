@@ -18,6 +18,10 @@ namespace Meteo
         private List<Watchdog> myWatchdogs;
         public int idMesureConfigured;
 
+        /*public object type_Measure;
+        public object format;*/
+
+
         public int iMin;
         public int iMax;
 
@@ -66,18 +70,18 @@ namespace Meteo
         {
             if (Check())
             {
+                Int32.TryParse(cmbID.Text, out idMesureConfigured);
+
                 if (!(cmbMeasureType.SelectedItem.Equals(IdSys.getTypeMeasure()[0]) ||
                       cmbMeasureType.SelectedItem.Equals(IdSys.getTypeMeasure()[1])))
                 {
                     formType = 0;
-                    Int32.TryParse(cmbID.Text, out idMesureConfigured);
                     
                 }
                 else
                 {
                     formType = 1;
                 }
-
                 myWatchdogs[idMesureConfigured].type_Measure = cmbMeasureType.SelectedItem;
                 myWatchdogs[idMesureConfigured].format = cmbFomat.SelectedItem;
 

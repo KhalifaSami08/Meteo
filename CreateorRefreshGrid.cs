@@ -39,28 +39,19 @@ namespace Meteo
 
                 foreach (Measure ma in myMeasuresConfigured)
                 {
-                    if (ma.ID_Measure == a.id_Alarme)
+                    if (ma.id == a.id_Alarme)
                     {
                         m = ma;
                     }
                 }
+
                 int format = 0;
-                try
-                {
-                    if (!(m is null))
-                    {
-                        format = Int32.Parse(m.format + "");
-                    }
-                }
-                catch
-                {
-                    MessageBox.Show("Probleme CAST");
-                }
+                Int32.TryParse(m.format + "", out format);
 
                 int lastm = 0;
                 if (!(m is null))
                 {
-                    lastm = generatelastmesure(a.id_Alarme, format, m.minValue, m.maxValue, myWatchdogs);
+                    lastm = generatelastmesure(a.id_Alarme, format, m.minValue, m.maxValue, myWatchdogs, myMeasuresConfigured);
 
                 }
                 String[] s = {
@@ -109,10 +100,10 @@ namespace Meteo
             dataGridView2.Width = nb_COLMes * CELL_SIZE;
         }
 
-        private static int generatelastmesure(int id, int octet, int min, int max, List<Watchdog> myWatchdogs)
+        private static int generatelastmesure(int id, int octet, int min, int max, List<Watchdog> myWatchdogs, List<Measure> myMeasuresConfigured)
         {
             octet /= 8;
-            int begin = 17085; // 0xaa-0x55-0xaa in decimal
+            int begin = 0xaa55aa;
 
             // Random rnd = new Random();
             //String nbr;
@@ -130,9 +121,15 @@ namespace Meteo
 
             String trames = begin + "" + id + "" + octet + "" + nombre;
 
-            //myMeasures[id].data.Add(trames);
+            Measure m = null;
 
-            Measure m = (Measure)myWatchdogs[id];
+            foreach (Measure me in myMeasuresConfigured)
+            {
+                if (me.id == id)
+                {
+                    m = me;
+                }
+            }
 
             m.data.Add(nombre + "");
             if (m.data.Count > 10)
@@ -143,7 +140,7 @@ namespace Meteo
             return nombre;
         }
 
-        public static void createOrRefreshConfigGrid(DataGridView dataGridView1, List<Watchdog> myWatchdogs)
+        public static void createOrRefreshConfigGrid(DataGridView dataGridView1, List<Watchdog> myWatchdogs, List<Measure> myMeasuresConfigured)
         {
             int CELL_SIZE = 110; //Pour l'affichage
             int nb_COLConf = 5;
@@ -169,19 +166,15 @@ namespace Meteo
                 s[0] = w.id + "";
                 s[1] = w.type_Measure + "";
                 s[2] = w.format + "";
+                s[3] = "none";
+                s[4] = "none";
 
-                Console.WriteLine(s[2]);
 
                 if (w is Measure)
                 {
                     Measure m = (Measure)w;
                     s[3] = m.minValue + "";
                     s[4] = m.maxValue + "";
-                }
-                else
-                {
-                    s[3] = "none";
-                    s[4] = "none";
                 }
 
                 dt.Rows.Add(s);
@@ -220,26 +213,18 @@ namespace Meteo
                 dt.Columns.Add();
             }
 
-            foreach (IdSys m in myIdSysMeasures)
+            foreach (IdSys w in myIdSysMeasures)
             {
+                String source = generateSource(w.id);
+                String detail = generateDetail();
+                String status = generateStatus();
 
-                String[] s = new string[5];
-                s[0] = m.id + "";
-                s[1] = m.type_Measure + "";
-                s[2] = m.format + "";
-
-                /*
-                 * 
-                 * 
-                 * 
-                 * 
-                 * 
-                 * 
-                 * 
-                 * */
+                String[] s = { w.id + "", w.type_Measure + "", w.format + "", source, detail, status};
 
                 dt.Rows.Add(s);
             }
+
+
             dataGridView3.Columns[0].HeaderText = "ID";
             dataGridView3.Columns[1].HeaderText = "Measurement TYPE";
             dataGridView3.Columns[2].HeaderText = "Format(Byte)";
@@ -255,6 +240,67 @@ namespace Meteo
             }
 
             dataGridView3.Width = Col_Id * CELL_SIZE;
+        }
+
+        private static String generateSource(int id)
+        {
+            String s = "";
+            Random rnd = new Random();
+            int rand = rnd.Next(0, 2);
+            //Console.WriteLine("Source : " + rand);
+            switch (rand)
+            {
+                case 0: // == 0xaa
+                    s = "System";
+                    break;
+                case 1:
+                    s = "Id - " + id;
+                    break;
+            }
+            return s;
+        }
+
+        private static String generateDetail()
+        {
+            String s = "";
+            Random rnd = new Random();
+            int rand = rnd.Next(0, 4);
+            //Console.WriteLine("Detail : " + rand);
+            switch (rand)
+            {
+                case 0: // == 0x00
+                    s = "No Detail";
+                    break;
+                case 1: // == 0x55
+                    s = "Surcurrent";
+                    break;
+                case 2: // == 0xaa
+                    s = "overvoltage ";
+                    break;
+                case 3: // == 0xff
+                    s = "overtemperature";
+                    break;
+            }
+            return s;
+        }
+
+        private static String generateStatus()
+        {
+            String s = "";
+            Random rnd = new Random();
+            int rand = rnd.Next(0, 2);
+            //Console.WriteLine("Status : " + rand);
+            switch (rand)
+            {
+                case 0: // == 0x55
+                    s = "Active";
+                    break;
+
+                case 1: // == 0xaa
+                    s = "inactive";
+                    break;
+            }
+            return s;
         }
 
     }

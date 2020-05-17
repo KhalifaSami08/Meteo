@@ -83,6 +83,12 @@
       <DependentUpon>ConnectUserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="CreateorRefreshGrid.cs" />
+    <Compile Include="CreateUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateUser.Designer.cs">
+      <DependentUpon>CreateUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="DisConfigForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,6 +124,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectUserForm.resx">
       <DependentUpon>ConnectUserForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CreateUser.resx">
+      <DependentUpon>CreateUser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DisConfigForm.resx">
       <DependentUpon>DisConfigForm.cs</DependentUpon>

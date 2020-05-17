@@ -42,12 +42,11 @@ namespace Meteo
             myAlarm = new List<Alarm>();
             myIdSysMeasures = new List<IdSys>();
 
-            user = new User("MiddleRights", "12345", 1);
+            user = new User(0, "12345");
 
             ID = 0;
             bTimer = false;
-            label1.Text = "Your Right Level is : " + user.userAcess.accessKeyId;
-            
+
             createOrReffreshGridConfig();
             createOrReffreshGridMeasure();
             createOrReffreshGridIdSystem();
@@ -89,6 +88,8 @@ namespace Meteo
                     removeUserToolStripMenuItem.Enabled = false;
                     break;
             }
+            changeLabel();
+
         }
 
         private void catchAllUsers()
@@ -104,12 +105,11 @@ namespace Meteo
                 OleDbCommand dbCommand = new OleDbCommand(req, dbConnection);
                 OleDbDataReader dataReader = dbCommand.ExecuteReader();
 
-                dataReader.Read();
+                //dataReader.Read();
 
-                while (dataReader.HasRows)
+                while (dataReader.Read())
                 {
-                    myUsers.Add(new User(dataReader[1].ToString(), dataReader[2].ToString(), Int32.Parse(dataReader[3].ToString())));
-                    Console.WriteLine(dataReader[1].ToString());
+                    myUsers.Add( new User( dataReader[1].ToString(), dataReader[2].ToString(), Int32.Parse(dataReader[3].ToString())) );
 
                 }
 
@@ -119,6 +119,36 @@ namespace Meteo
             {
                 MessageBox.Show("Error Command !" + exc.Message);
             }
+        }
+
+        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConnectUserForm userForm = new ConnectUserForm(myUsers);
+            userForm.ShowDialog();
+
+            if (userForm.validForm)
+            {
+                foreach (User u in myUsers)
+                {
+                    if (u.userName.Equals(userForm.userName))
+                    {
+                        user = userForm.myUser;
+                        setRightLayout();
+                    }
+                }
+            }
+        }
+        private void createNewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateUser cu = new CreateUser(myUsers);
+            cu.ShowDialog();
+            user = cu.u;
+            setRightLayout();
+        }
+
+        private void removeUserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void bOnOff_Click(object sender, EventArgs e)
@@ -147,32 +177,37 @@ namespace Meteo
             }
         }
 
+        private void changeLabel()
+        {
+            label1.Text = "Your username is : " + user.userName + "\n And your level Access is : " +
+                                        user.userAcess.accessName;
+        }
+
         private void createOrReffreshGridConfig()
         {
 
-           CreateorRefreshGrid.createOrRefreshConfigGrid(dataGridView1, myWatchdogs);
+            CreateorRefreshGrid.createOrRefreshConfigGrid(dataGridView1, myWatchdogs, myMeasuresConfigured);
 
         }
 
         private void createOrReffreshGridMeasure()
         {
-
-            CreateorRefreshGrid.createOrRefreshMesureGrid(dataGridView2,myAlarm,myMeasuresConfigured, myWatchdogs);
+            CreateorRefreshGrid.createOrRefreshMesureGrid(dataGridView2, myAlarm, myMeasuresConfigured, myWatchdogs);
         }
 
         private void createOrReffreshGridIdSystem()
         {
-            CreateorRefreshGrid.createOrRefreshIdSysGrid(dataGridView3,myIdSysMeasures);
+            CreateorRefreshGrid.createOrRefreshIdSysGrid(dataGridView3, myIdSysMeasures);
         }
 
-        
+
 
         private void timerGenerate_Tick(object sender, EventArgs e)
         {
             int max = 10;
             if (myWatchdogs.Count <= max)
             {
-                myWatchdogs.Add(new Measure(ID++, "undef", "undef", 0, 0));
+                myWatchdogs.Add(new Watchdog(ID++, "undef", "undef"));
                 createOrReffreshGridConfig();
             }
             else
@@ -188,39 +223,7 @@ namespace Meteo
 
         }
 
-        private void sauvegarderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (myMeasuresConfigured.Count == 0)
-            {
-                MessageBox.Show("Config List is Empty ! ");
-            }
-            else
-            {
-                String file = "C:\\Users\\mklfs\\source\\repos\\Meteo\\FILELOG.csv";
-                StreamWriter sw = new StreamWriter(file);
-
-                foreach (Measure m in myMeasuresConfigured)
-                {
-                    sw.Write("ID : " + m.ID_Measure + ";\n");
-                    sw.Write("Type : " + m.type_Measure + ";\n");
-                    sw.Write("Format : " + m.format + ";\n");
-                    sw.Write("Min Value : " + m.minValue + ";\n");
-                    sw.Write("Max Value : " + m.maxValue + ";\n \n");
-
-                    sw.Write("List of Data : \n");
-
-                    String str = "";
-                    foreach (String s in m.data)
-                    {
-                        str += s + ";\t";
-                    }
-                    sw.Write(str + ";\n \n");
-
-                }
-                MessageBox.Show("File created succesfully ! ");
-                sw.Close();
-            }
-        }
+       
 
         private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -265,25 +268,42 @@ namespace Meteo
 
                 if (f.formType != -1) //isOk
                 {
+
                     Watchdog w = myWatchdogs[f.idMesureConfigured];
 
-                    myMeasuresConfigured.Add(new Measure(w.id,w.type_Measure,w.format,f.iMin,f.iMax));
-                    if (myMeasuresConfigured.Count > 10)
+
+                    if (f.formType == 0)
                     {
-                        myMeasuresConfigured.RemoveAt(0);
+
+                        Measure m = new Measure(w.id, w.type_Measure, w.format, f.iMin, f.iMax);
+                        myMeasuresConfigured.Add(m);
+
+                        myWatchdogs[f.idMesureConfigured] = m;
+
+                        if (myMeasuresConfigured.Count > 10)
+                        {
+                            myMeasuresConfigured.RemoveAt(0);
+                        }
                     }
-                    createOrReffreshGridConfig();
 
                     if (f.formType == 1) //idsys or watchdog
                     {
-                        myIdSysMeasures.Add(new IdSys(w.id, w.type_Measure, w.format,"","",""));
+                        IdSys i = new IdSys(w.id, w.type_Measure, w.format, "none", "none", "none");
+
+                        myIdSysMeasures.Add(i);
+                        myWatchdogs[f.idMesureConfigured] = i;
+
+                        if (myIdSysMeasures.Count > 10)
+                        {
+                            myIdSysMeasures.RemoveAt(0);
+                        }
                         createOrReffreshGridIdSystem();
                     }
 
-                }
-                
-            }
+                    createOrReffreshGridConfig();
 
+                }
+            }
         }
 
         private void timerMeasure_Tick(object sender, EventArgs e)
@@ -297,11 +317,11 @@ namespace Meteo
             this.chart1.Titles.Clear();
             Measure mes = null;
 
-            foreach(Measure m in myMeasuresConfigured)
+            foreach (Measure m in myMeasuresConfigured)
             {
-                if(m.id == idM)
+                if (m.id == idM)
                 {
-                    mes = (Measure)myWatchdogs[idM];
+                    mes = m;
                 }
             }
             this.chart1.Titles.Add("Graphic for ID : " + idM);
@@ -347,29 +367,7 @@ namespace Meteo
             pf.ShowDialog();
 
         }
-        private void createNewToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ConnectUserForm userForm = new ConnectUserForm();
-            userForm.ShowDialog();
-
-            if (userForm.validForm)
-            {
-                foreach(User u in myUsers)
-                {
-                    if (u.userName.Equals(userForm.userName))
-                    {
-                        user = u;
-                        MessageBox.Show("Your username is : " + u.userName + ", And your level Access is : " +
-                                        u.userAcess);
-                    }
-                }
-            }
-        }
+       
 
         private void configToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -384,34 +382,66 @@ namespace Meteo
             }
             else
             {
-                disConfig(myMeasuresConfigured[0].ID_Measure);
+                disConfig(myMeasuresConfigured[0].id);
             }
         }
 
         private void disConfig(int id)
         {
-            DisConfigForm disConfig = new DisConfigForm(user, myMeasuresConfigured, id);
-            disConfig.ShowDialog();
-
-            if (disConfig.formOK)
+            DisConfigForm disConfig = null;
+            if (myWatchdogs[id] is Measure)
             {
-                int pos = disConfig.idRemove;
-                for (int i = 0; i < myMeasuresConfigured.Count; i++)
-                {
-                    if (pos == myMeasuresConfigured[i].ID_Measure)
-                    {
-                        myMeasuresConfigured.RemoveAt(i);
-                    }
 
-                    if (pos == myAlarm[i].id_Alarme)
+                disConfig = new DisConfigForm(user, myMeasuresConfigured, id);
+                disConfig.ShowDialog();
+
+                if (disConfig.formOK)
+                {
+                    int pos = disConfig.idRemove;
+                    for (int i = 0; i < myMeasuresConfigured.Count; i++)
                     {
-                        myAlarm.RemoveAt(i);
+
+                        if (pos == myMeasuresConfigured[i].id)
+                        {
+                            myMeasuresConfigured.RemoveAt(i);
+                        }
+
+                        if (myAlarm.Count != 0)
+                        {
+                            if (pos == myAlarm[i].id_Alarme)
+                            {
+                                myAlarm.RemoveAt(i);
+                            }
+                        }
+
                     }
+                    myWatchdogs.RemoveAt(pos);
                 }
-                myWatchdogs.RemoveAt(pos);
-                createOrReffreshGridConfig();
-                createOrReffreshGridMeasure();
             }
+            else
+            {
+                disConfig = new DisConfigForm(user, myIdSysMeasures, id);
+                disConfig.ShowDialog();
+
+                if (disConfig.formOK)
+                {
+                    int pos = disConfig.idRemove;
+                    for (int i = 0; i < myIdSysMeasures.Count; i++)
+                    {
+                        if (pos == myIdSysMeasures[i].id)
+                        {
+                            myIdSysMeasures.RemoveAt(i);
+                        }
+                    }
+                    myWatchdogs.RemoveAt(pos);
+                }
+            }
+
+
+            createOrReffreshGridConfig();
+            createOrReffreshGridMeasure();
+            createOrReffreshGridIdSystem();
+
         }
 
         private void configNewAlarmToolStripMenuItem_Click(object sender, EventArgs e)
@@ -430,7 +460,6 @@ namespace Meteo
                 if (f.valid)
                 {
                     myAlarm.Add(f.A);
-                    cmbIdGraph.Items.Add(f.A.id_Alarme);
                     createOrReffreshGridMeasure();
                     if (!timerMeasure.Enabled)
                     {
@@ -439,5 +468,118 @@ namespace Meteo
                 }
             }
         }
+
+        private void sauvegarderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (myMeasuresConfigured.Count == 0)
+            {
+                MessageBox.Show("Config List is Empty ! ");
+            }
+            else
+            {
+                String file = "C:\\Users\\mklfs\\source\\repos\\Meteo\\FILELOG.csv";
+                StreamWriter sw = new StreamWriter(file);
+
+                sw.Write("ID : ;");
+                sw.Write("Type : ;");
+                sw.Write("Format : ;");
+
+                sw.Write("Min Value : ;");
+                sw.Write("Max Value : ;");
+
+                sw.Write("Min Alarm : ;");
+                sw.Write("Max Alarm : ;\n\n");
+
+                foreach (Measure m in myMeasuresConfigured)
+                {
+                    Alarm a = null;
+
+                    foreach(Alarm al in myAlarm)
+                    {
+                        if(al.id_Alarme == m.id)
+                        {
+                            a = al;
+                        }
+                    }
+
+                    sw.Write(m.id + ";");
+                    sw.Write(m.type_Measure + ";");
+                    sw.Write(m.format + ";");
+                    
+                    sw.Write(m.minValue + ";");
+                    sw.Write(m.maxValue + ";");
+
+                    sw.Write(a.minAlarm + ";");
+                    sw.Write(a.maxAlarm + ";\t");
+
+                    sw.Write("List of Data : ;\t");
+
+                    if (m.data.Count == 0)
+                    {
+                        sw.Write("List null;");
+                    }
+                    else
+                    {
+                        String str = "";
+                        foreach (String s in m.data)
+                        {
+                            str += s + ";\t";
+                        }
+                        sw.Write(str);
+                    }
+
+                    sw.Write("\n");
+
+                }
+                MessageBox.Show("File created succesfully ! ");
+                sw.Close();
+            }
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String file = "C:\\Users\\mklfs\\source\\repos\\Meteo\\FILELOG.csv";
+                myWatchdogs.Clear();
+                myMeasuresConfigured.Clear();
+                myAlarm.Clear();
+
+            try
+            {
+                using (StreamReader sr = new StreamReader(file))
+                {
+                    string line;
+                    String[] tab;
+                    Console.WriteLine(sr.ReadLine());
+                    Console.WriteLine(sr.ReadLine());
+                    
+
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        tab = line.Split(';');
+                        Console.WriteLine(line);
+
+                        Measure m = new Measure(Int32.Parse(tab[0]), tab[1], tab[2], Int32.Parse(tab[3]), Int32.Parse(tab[4]));
+                        myWatchdogs.Add(m);
+                        myMeasuresConfigured.Add(m);
+                        myAlarm.Add(new Alarm(Int32.Parse(tab[0]), tab[1], Int32.Parse(tab[5]), Int32.Parse(tab[6])));
+
+                    }
+                    createOrReffreshGridMeasure();
+                    foreach (Alarm a in myAlarm)
+                    {
+                        cmbIdGraph.Items.Add(a.id_Alarme);
+                    }
+                    createOrReffreshGridConfig();
+                    timerMeasure.Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("The file could not be read:");
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        
     }
 }

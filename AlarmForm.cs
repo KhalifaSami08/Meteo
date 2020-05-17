@@ -42,7 +42,7 @@ namespace Meteo
 
             for (int i = 0; i < myIdMeasuresConfigured.Count; i++)
             {
-                lists[i] = myIdMeasuresConfigured[i].ID_Measure;
+                lists[i] = myIdMeasuresConfigured[i].id;
             }
             return lists;
         }
@@ -80,9 +80,9 @@ namespace Meteo
                 throw new Exception("Min or max are not number");
             }
 
-            if (iminAlarm >= imaxAlarm || imaxAlarm < m.maxValue || iminAlarm > m.minValue)
+            if (iminAlarm >= imaxAlarm || imaxAlarm > m.maxValue || iminAlarm < m.minValue)
             {
-                MessageBox.Show("Min or Max values aren't valid ! \n Max must be High than : " + m.maxValue + " \n Min must be lower than : " + m.minValue);
+                MessageBox.Show("Min or Max values aren't valid ! \n Min must be higer than: " + m.minValue+"\n Max must be lower than : " + m.maxValue);
 
             }
             else
@@ -103,7 +103,7 @@ namespace Meteo
 
             foreach (Measure me in myIdMeasuresConfigured)
             {
-                if (idSelected == me.ID_Measure)
+                if (idSelected == me.id)
                 {
                     m = me;
                 }

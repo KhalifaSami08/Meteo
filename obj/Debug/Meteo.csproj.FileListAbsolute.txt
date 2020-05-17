@@ -12,3 +12,4 @@ C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.AlarmForm.resources
 C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.csproj.CoreCompileInputs.cache
 C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.PortCOMForm.resources
 C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.ConnectUserForm.resources
+C:\Users\mklfs\source\repos\Meteo\Meteo\obj\Debug\Meteo.DisConfigForm.resources

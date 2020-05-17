@@ -12,6 +12,7 @@ namespace Meteo
         public object type_Measure;
         public object format;
 
+
         public Watchdog(int id, object type_Measure, object format)
         {
             this.id = id;
@@ -19,8 +20,6 @@ namespace Meteo
             this.format = format;
         }
 
-
-
-
+       
     }
 }

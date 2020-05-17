@@ -17,11 +17,14 @@ namespace Meteo
         public String userName;
         String passWord;
         public bool validForm;
+        private List<User> allUsers;
+        public User myUser;
 
 
-        public ConnectUserForm()
+        public ConnectUserForm(List<User> allUsers)
         {
             InitializeComponent();
+            this.allUsers = allUsers;
         }
 
         private void ConnectUserForm_Load(object sender, EventArgs e)
@@ -40,12 +43,18 @@ namespace Meteo
             {
                 dbConnect();
             }
+            else
+            {
+                MessageBox.Show("Verify your inputs ! ");
+            }
         }
 
         private bool verifyInput()
         {
-            if(textBox1.Text.Equals("") || textBox2.Text.Equals(""))
+            if (!(textBox1.Text.Equals("") || textBox2.Text.Equals("")))
             {
+                userName = textBox1.Text;
+                passWord = textBox2.Text;
                 return true;
             }
             return false;
@@ -53,49 +62,29 @@ namespace Meteo
 
         private void dbConnect()
         {
-            string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\mklfs\\source\\repos\\Meteo\\MeteoAccessDB.accdb;Cache Authentication=True";
-            OleDbConnection dbConnection = new OleDbConnection(connectionString);
 
-            try
+            foreach(User u in allUsers)
             {
-                dbConnection.Open();
 
-                string req = "SELECT * FROM UserTable WHERE UserName = '" + userName + "'";
-                OleDbCommand dbCommand = new OleDbCommand(req, dbConnection);
-                OleDbDataReader dataReader = dbCommand.ExecuteReader();
-
-
-                if (dataReader.HasRows)
+                if (u.userName.Equals(userName))
                 {
 
-                    if (passWord.Equals(dataReader[2].ToString()))
+                    if (passWord.Equals(u.userPassword))
                     {
                         MessageBox.Show("Connected ! ");
-                        validForm = true;
-
-
-
-                        Close();
+                            validForm = true;
+                            myUser = u;
+                            Close();
                     }
                     else
                     {
-                        MessageBox.Show("Password not Valid !");
+                        MessageBox.Show("Password doesn't exist !");
                     }
 
                 }
-                else
-                {
-                    MessageBox.Show("Username doesn't exist !");
-                }
 
+            }
 
-                dbConnection.Close();
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show("Error Command !" + exc.Message);
-            }
         }
-
     }
 }

@@ -14,26 +14,47 @@ namespace Meteo
     {
         private User user;
         public int idRemove;
-        private List<Measure> configuredList;
+
+        private List<Measure> configuredListMeasure;
+        private List<IdSys> configuredListIdsys;
+
         public bool formOK;
-        public DisConfigForm(User u,List<Measure> configuredList,int id)
+        public DisConfigForm(User u, List<Measure> configuredList, int id)
         {
             InitializeComponent();
             this.user = u;
-            this.configuredList = configuredList;
+            this.configuredListMeasure = configuredList;
             this.idRemove = id;
-            formOK = false;
+        }
+        public DisConfigForm(User u, List<IdSys> configuredListIdsys, int id)
+        {
+            InitializeComponent();
+            this.user = u;
+            this.configuredListIdsys = configuredListIdsys;
+            this.idRemove = id;
         }
 
         private void DisConfigForm_Load(object sender, EventArgs e)
         {
-            foreach (Measure m in configuredList)
+            formOK = false;
+
+            if (configuredListIdsys is null)
             {
-                comboBox1.Items.Add(m.ID_Measure);
+                foreach (Measure w in configuredListMeasure)
+                {
+                    comboBox1.Items.Add(w.id);
+                }
+            }
+            else
+            {
+                foreach (IdSys w in configuredListIdsys)
+                {
+                    comboBox1.Items.Add(w.id);
+                }
             }
 
-            comboBox1.Text = idRemove+"";
-
+            comboBox1.Text = ""+idRemove;
+            
         }
 
         private void bCancel_Click(object sender, EventArgs e)
@@ -46,14 +67,13 @@ namespace Meteo
             if (comboBox1.Text is null)
             {
                 MessageBox.Show("Select index ! ");
-
             }
             else
             {
-                if (textBox1.Text.Equals(user.userPassword))
+                if (textBox1.Text.Equals(user.userPassword))//password okx
                 {
-                    idRemove = Int32.Parse(comboBox1.SelectedItem.ToString());
-                    MessageBox.Show(" Mesure Removed");
+                    Int32.TryParse(comboBox1.SelectedItem.ToString(), out idRemove);
+                    MessageBox.Show("Mesure Removed");
                     formOK = true;
                     Close();
                 }

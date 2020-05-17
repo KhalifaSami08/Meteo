@@ -8,16 +8,14 @@ namespace Meteo
 {
     public class Measure : Watchdog
     {
-        public int ID_Measure;
-        public object type_Measure;
-        public object format;
+        
         public int minValue;
         public int maxValue;
         public List<String> data { get; set; }
 
         public Measure(int id, object type_Measure, object format, int minValue, int maxValue): base(id, type_Measure, format)
         {
-            this.ID_Measure = id;
+            this.id = id;
             this.type_Measure = type_Measure;
             this.format = format;
 

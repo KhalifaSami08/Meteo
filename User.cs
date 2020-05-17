@@ -11,9 +11,9 @@ namespace Meteo
     {
         public static int accessKeyId { get; set; } //static beacause only one will be instacied.
 
+        public string userPassword { get; set; }
 
         public string userName { get; set; }
-        public string userPassword { get; set; }
 
         public Access userAcess;
 
@@ -24,6 +24,16 @@ namespace Meteo
             User.accessKeyId = accessKeyId;
             userAcess = new Access();
         }
+
+        public User(int accessKeyId, string userPassword)
+        {
+            this.userPassword = userPassword;
+            User.accessKeyId = accessKeyId;
+            userAcess = new Access();
+            this.userName = userAcess.accessName;
+        }
+
+
     }
 
     public class Access
