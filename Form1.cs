@@ -19,7 +19,7 @@ namespace Meteo
         private User user;
         private List<User> myUsers;
 
-
+        private CreateorRefreshGrid createorRefreshGrid;
         private int ID;
         private bool bTimer;
 
@@ -44,6 +44,7 @@ namespace Meteo
 
             user = new User(0, "12345");
 
+            createorRefreshGrid = new CreateorRefreshGrid();
             ID = 0;
             bTimer = false;
 
@@ -60,8 +61,16 @@ namespace Meteo
         //Enable or Disable toolStripMenu 
         private void setRightLayout()
         {
+
+            configNewAlarmToolStripMenuItem.Enabled = true;
+            configToolStripMenuItem.Enabled = true;
+            disconfigToolStripMenuItem.Enabled = true;
+            createNewToolStripMenuItem.Enabled = true;
+            removeUserToolStripMenuItem.Enabled = true;
+
             switch (user.userAcess.accessKeyId)
             {
+
                 case 4:
                     configNewAlarmToolStripMenuItem.Enabled = false;
                     configToolStripMenuItem.Enabled = false;
@@ -187,18 +196,18 @@ namespace Meteo
         private void createOrReffreshGridConfig()
         {
 
-            CreateorRefreshGrid.createOrRefreshConfigGrid(dataGridView1, myWatchdogs, myMeasuresConfigured);
+            createorRefreshGrid.createOrRefreshConfigGrid(dataGridView1, myWatchdogs, myMeasuresConfigured);
 
         }
 
         private void createOrReffreshGridMeasure()
         {
-            CreateorRefreshGrid.createOrRefreshMesureGrid(dataGridView2, myAlarm, myMeasuresConfigured, myWatchdogs);
+            createorRefreshGrid.createOrRefreshMesureGrid(dataGridView2, myAlarm, myMeasuresConfigured, myWatchdogs);
         }
 
         private void createOrReffreshGridIdSystem()
         {
-            CreateorRefreshGrid.createOrRefreshIdSysGrid(dataGridView3, myIdSysMeasures);
+            createorRefreshGrid.createOrRefreshIdSysGrid(dataGridView3, myIdSysMeasures);
         }
 
 
@@ -262,7 +271,7 @@ namespace Meteo
                 if (f.formType != -1) //isOk
                 {
 
-                    Watchdog w = myWatchdogs[f.idMesureConfigured];
+                    Watchdog w = f.watch;
 
 
                     if (f.formType == 0)
@@ -271,20 +280,32 @@ namespace Meteo
                         Measure m = new Measure(w.id, w.type_Measure, w.format, f.iMin, f.iMax);
                         myMeasuresConfigured.Add(m);
 
-                        myWatchdogs[f.idMesureConfigured] = m;
+                        for (int i = 0; i < myWatchdogs.Count; i++)
+                        {
+                            if(w.id == myWatchdogs[i].id)
+                            {
+                                myWatchdogs[i] = m;
+                            }
+                        }
 
                         if (myMeasuresConfigured.Count > 10)
                         {
                             myMeasuresConfigured.RemoveAt(0);
                         }
                     }
-
-                    if (f.formType == 1) //idsys or watchdog
+                    else if (f.formType == 1) //idsys or watchdog
                     {
-                        IdSys i = new IdSys(w.id, w.type_Measure, w.format, "none", "none", "none");
+                        IdSys ids = new IdSys(w.id, w.type_Measure, w.format, generateSource(w.id), generateDetail(), generateStatus());
 
-                        myIdSysMeasures.Add(i);
-                        myWatchdogs[f.idMesureConfigured] = i;
+                        myIdSysMeasures.Add(ids);
+
+                        for (int i = 0; i < myWatchdogs.Count; i++)
+                        {
+                            if (w.id == myWatchdogs[i].id)
+                            {
+                                myWatchdogs[i] = ids;
+                            }
+                        }
 
                         if (myIdSysMeasures.Count > 10)
                         {
@@ -292,11 +313,76 @@ namespace Meteo
                         }
                         createOrReffreshGridIdSystem();
                     }
+                    else
+                    {
+                        MessageBox.Show("Mistake ! ");
+                    }
 
                     createOrReffreshGridConfig();
 
                 }
             }
+        }
+
+        private String generateSource(int id)
+        {
+            String s = "";
+            Random rnd = new Random();
+            int rand = rnd.Next(0, 2);
+            //Console.WriteLine("Source : " + rand);
+            switch (rand)
+            {
+                case 0: // == 0xaa
+                    s = "System";
+                    break;
+                case 1:
+                    s = "Id - " + id;
+                    break;
+            }
+            return s;
+        }
+
+        private String generateDetail()
+        {
+            String s = "";
+            Random rnd = new Random();
+            int rand = rnd.Next(0, 4);
+            //Console.WriteLine("Detail : " + rand);
+            switch (rand)
+            {
+                case 0: // == 0x00
+                    s = "No Detail";
+                    break;
+                case 1: // == 0x55
+                    s = "Surcurrent";
+                    break;
+                case 2: // == 0xaa
+                    s = "overvoltage ";
+                    break;
+                case 3: // == 0xff
+                    s = "overtemperature";
+                    break;
+            }
+            return s;
+        }
+
+        private String generateStatus()
+        {
+            String s = "";
+            Random rnd = new Random();
+            int rand = rnd.Next(0, 2);
+            //Console.WriteLine("Status : " + rand);
+            switch (rand)
+            {
+                case 0: // == 0x55
+                    s = "Active";
+                    break;
+
+                case 1: // == 0xaa
+                    s = "inactive";
+                    break;
+            }
+            return s;
         }
 
         private void timerMeasure_Tick(object sender, EventArgs e)

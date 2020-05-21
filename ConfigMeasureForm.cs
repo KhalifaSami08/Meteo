@@ -16,10 +16,8 @@ namespace Meteo
 
         public int formType;
         private List<Watchdog> myWatchdogs;
+        public Watchdog watch;
         public int idMesureConfigured;
-
-        /*public object type_Measure;
-        public object format;*/
 
 
         public int iMin;
@@ -82,8 +80,17 @@ namespace Meteo
                 {
                     formType = 1;
                 }
-                myWatchdogs[idMesureConfigured].type_Measure = cmbMeasureType.SelectedItem;
-                myWatchdogs[idMesureConfigured].format = cmbFomat.SelectedItem;
+
+                foreach(Watchdog w in myWatchdogs)
+                {
+                    if(w.id == idMesureConfigured)
+                    {
+                        watch = w;
+                        w.type_Measure = cmbMeasureType.SelectedItem;
+                        w.format = cmbFomat.SelectedItem;
+                    }
+                }
+               
 
                 Close();
             }

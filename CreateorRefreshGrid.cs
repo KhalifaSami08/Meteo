@@ -9,10 +9,10 @@ using System.Windows.Forms;
 
 namespace Meteo
 {
-    public static class CreateorRefreshGrid
+    public class CreateorRefreshGrid
     {
 
-        public static void createOrRefreshMesureGrid(DataGridView dataGridView2, List<Alarm> myAlarm, List<Measure> myMeasuresConfigured, List<Watchdog> myWatchdogs)
+        public void createOrRefreshMesureGrid(DataGridView dataGridView2, List<Alarm> myAlarm, List<Measure> myMeasuresConfigured, List<Watchdog> myWatchdogs)
         {
             int nb_COLMes = 6;
 
@@ -100,7 +100,7 @@ namespace Meteo
             dataGridView2.Width = nb_COLMes * CELL_SIZE;
         }
 
-        private static int generatelastmesure(int id, int octet, int min, int max, List<Watchdog> myWatchdogs, List<Measure> myMeasuresConfigured)
+        private int generatelastmesure(int id, int octet, int min, int max, List<Watchdog> myWatchdogs, List<Measure> myMeasuresConfigured)
         {
             octet /= 8;
             int begin = 0xaa55aa;
@@ -140,7 +140,7 @@ namespace Meteo
             return nombre;
         }
 
-        public static void createOrRefreshConfigGrid(DataGridView dataGridView1, List<Watchdog> myWatchdogs, List<Measure> myMeasuresConfigured)
+        public void createOrRefreshConfigGrid(DataGridView dataGridView1, List<Watchdog> myWatchdogs, List<Measure> myMeasuresConfigured)
         {
             int CELL_SIZE = 110; //Pour l'affichage
             int nb_COLConf = 5;
@@ -194,7 +194,7 @@ namespace Meteo
             dataGridView1.Width = nb_COLConf * CELL_SIZE;
         }
 
-        public static void createOrRefreshIdSysGrid(DataGridView dataGridView3, List<IdSys> myIdSysMeasures)
+        public void createOrRefreshIdSysGrid(DataGridView dataGridView3, List<IdSys> myIdSysMeasures)
         {
             int Col_Id = 6;
             int CELL_SIZE = 90; //Pour l'affichage
@@ -215,11 +215,10 @@ namespace Meteo
 
             foreach (IdSys w in myIdSysMeasures)
             {
-                String source = generateSource(w.id);
-                String detail = generateDetail();
-                String status = generateStatus();
 
-                String[] s = { w.id + "", w.type_Measure + "", w.format + "", source, detail, status};
+                Console.WriteLine(w.id+" : "+w.source+" :: "+w.detail+" ::: "+w.status);
+
+                String[] s = { w.id + "", w.type_Measure + "", w.format + "", w.source, w.detail, w.status};
 
                 dt.Rows.Add(s);
             }
@@ -242,66 +241,7 @@ namespace Meteo
             dataGridView3.Width = Col_Id * CELL_SIZE;
         }
 
-        private static String generateSource(int id)
-        {
-            String s = "";
-            Random rnd = new Random();
-            int rand = rnd.Next(0, 2);
-            //Console.WriteLine("Source : " + rand);
-            switch (rand)
-            {
-                case 0: // == 0xaa
-                    s = "System";
-                    break;
-                case 1:
-                    s = "Id - " + id;
-                    break;
-            }
-            return s;
-        }
-
-        private static String generateDetail()
-        {
-            String s = "";
-            Random rnd = new Random();
-            int rand = rnd.Next(0, 4);
-            //Console.WriteLine("Detail : " + rand);
-            switch (rand)
-            {
-                case 0: // == 0x00
-                    s = "No Detail";
-                    break;
-                case 1: // == 0x55
-                    s = "Surcurrent";
-                    break;
-                case 2: // == 0xaa
-                    s = "overvoltage ";
-                    break;
-                case 3: // == 0xff
-                    s = "overtemperature";
-                    break;
-            }
-            return s;
-        }
-
-        private static String generateStatus()
-        {
-            String s = "";
-            Random rnd = new Random();
-            int rand = rnd.Next(0, 2);
-            //Console.WriteLine("Status : " + rand);
-            switch (rand)
-            {
-                case 0: // == 0x55
-                    s = "Active";
-                    break;
-
-                case 1: // == 0xaa
-                    s = "inactive";
-                    break;
-            }
-            return s;
-        }
+        
 
     }
 }
