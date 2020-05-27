@@ -24,7 +24,7 @@ namespace Meteo
             User.accessKeyId = accessKeyId;
             userAcess = new Access();
         }
-
+        
         public User(int accessKeyId, string userPassword)
         {
             this.userPassword = userPassword;
@@ -38,7 +38,6 @@ namespace Meteo
 
     public class Access
     {
-       
         public int accessKeyId { get; set; }
         public string accessName { get; set; }
         public bool allowCreateID { get; set; }

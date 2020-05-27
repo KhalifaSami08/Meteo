@@ -119,7 +119,6 @@ namespace Meteo
                 while (dataReader.Read())
                 {
                     myUsers.Add( new User( dataReader[1].ToString(), dataReader[2].ToString(), Int32.Parse(dataReader[3].ToString())) );
-
                 }
 
                 dbConnection.Close();
