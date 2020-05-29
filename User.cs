@@ -25,9 +25,9 @@ namespace Meteo
             userAcess = new Access();
         }
         
-        public User(int accessKeyId, string userPassword)
+        public User(int accessKeyId)
         {
-            this.userPassword = userPassword;
+            this.userPassword = "12345";
             User.accessKeyId = accessKeyId;
             userAcess = new Access();
             this.userName = userAcess.accessName;

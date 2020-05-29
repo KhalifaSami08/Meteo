@@ -45,6 +45,7 @@ namespace Meteo
             cmbMeasureType.Items.AddRange(IdSys.getTypeMeasure());
 
             cmbID.Items.AddRange(getListMeasure());
+            cmbID.DropDownStyle = ComboBoxStyle.DropDownList;
 
         }
 

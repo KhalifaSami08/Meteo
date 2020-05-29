@@ -14,6 +14,7 @@ namespace Meteo
     public partial class RemoveUser : Form
     {
         private List<User> myUsers;
+        public string userName;
 
         public RemoveUser(List<User> myUsers)
         {
@@ -59,6 +60,7 @@ namespace Meteo
             try
             {
                 dbConnection.Open();
+                userName = comboBox1.SelectedItem.ToString();
 
                 string req = "DELETE FROM UserTable WHERE UserName = '"+ comboBox1.SelectedItem.ToString()+"'";
                 Console.WriteLine(req);

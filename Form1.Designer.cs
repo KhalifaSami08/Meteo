@@ -37,6 +37,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sauvegarderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connexionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pORTCOMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.portCOMToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,7 +63,14 @@
             this.timerMeasure = new System.Windows.Forms.Timer(this.components);
             this.timerGraph = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
-            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabLogs = new System.Windows.Forms.TabPage();
+            this.dataGridViewLog = new System.Windows.Forms.DataGridView();
+            this.cmbFilter = new System.Windows.Forms.ComboBox();
+            this.cmbNbEv = new System.Windows.Forms.ComboBox();
+            this.lFilter = new System.Windows.Forms.Label();
+            this.lNbEvent = new System.Windows.Forms.Label();
+            this.bSetDatagrid = new System.Windows.Forms.Button();
+            this.bExport = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.tabGraphics.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
@@ -73,6 +81,8 @@
             this.tabIndex.SuspendLayout();
             this.tabConfig.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tabLogs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLog)).BeginInit();
             this.SuspendLayout();
             // 
             // timerGenerate
@@ -117,9 +127,16 @@
             // sauvegarderToolStripMenuItem
             // 
             this.sauvegarderToolStripMenuItem.Name = "sauvegarderToolStripMenuItem";
-            this.sauvegarderToolStripMenuItem.Size = new System.Drawing.Size(198, 24);
+            this.sauvegarderToolStripMenuItem.Size = new System.Drawing.Size(114, 24);
             this.sauvegarderToolStripMenuItem.Text = "Save";
             this.sauvegarderToolStripMenuItem.Click += new System.EventHandler(this.sauvegarderToolStripMenuItem_Click);
+            // 
+            // loadToolStripMenuItem
+            // 
+            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(114, 24);
+            this.loadToolStripMenuItem.Text = "Load";
+            this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // connexionToolStripMenuItem
             // 
@@ -170,7 +187,7 @@
             // removeUserToolStripMenuItem
             // 
             this.removeUserToolStripMenuItem.Name = "removeUserToolStripMenuItem";
-            this.removeUserToolStripMenuItem.Size = new System.Drawing.Size(198, 24);
+            this.removeUserToolStripMenuItem.Size = new System.Drawing.Size(165, 24);
             this.removeUserToolStripMenuItem.Text = "Remove User";
             this.removeUserToolStripMenuItem.Click += new System.EventHandler(this.removeUserToolStripMenuItem_Click);
             // 
@@ -219,7 +236,7 @@
             this.tabGraphics.Location = new System.Drawing.Point(4, 22);
             this.tabGraphics.Name = "tabGraphics";
             this.tabGraphics.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGraphics.Size = new System.Drawing.Size(565, 321);
+            this.tabGraphics.Size = new System.Drawing.Size(569, 330);
             this.tabGraphics.TabIndex = 4;
             this.tabGraphics.Text = "Graphics";
             this.tabGraphics.UseVisualStyleBackColor = true;
@@ -256,7 +273,7 @@
             this.tabIdSystem.Location = new System.Drawing.Point(4, 22);
             this.tabIdSystem.Name = "tabIdSystem";
             this.tabIdSystem.Padding = new System.Windows.Forms.Padding(3);
-            this.tabIdSystem.Size = new System.Drawing.Size(565, 321);
+            this.tabIdSystem.Size = new System.Drawing.Size(569, 330);
             this.tabIdSystem.TabIndex = 2;
             this.tabIdSystem.Text = "Id System";
             this.tabIdSystem.UseVisualStyleBackColor = true;
@@ -276,7 +293,7 @@
             this.tabMeasure.Location = new System.Drawing.Point(4, 22);
             this.tabMeasure.Name = "tabMeasure";
             this.tabMeasure.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMeasure.Size = new System.Drawing.Size(565, 321);
+            this.tabMeasure.Size = new System.Drawing.Size(569, 330);
             this.tabMeasure.TabIndex = 0;
             this.tabMeasure.Text = "Measure";
             this.tabMeasure.UseVisualStyleBackColor = true;
@@ -297,10 +314,11 @@
             this.tabIndex.Controls.Add(this.tabIdSystem);
             this.tabIndex.Controls.Add(this.tabGraphics);
             this.tabIndex.Controls.Add(this.tabConfig);
-            this.tabIndex.Location = new System.Drawing.Point(94, 105);
+            this.tabIndex.Controls.Add(this.tabLogs);
+            this.tabIndex.Location = new System.Drawing.Point(87, 96);
             this.tabIndex.Name = "tabIndex";
             this.tabIndex.SelectedIndex = 0;
-            this.tabIndex.Size = new System.Drawing.Size(573, 347);
+            this.tabIndex.Size = new System.Drawing.Size(577, 356);
             this.tabIndex.TabIndex = 0;
             // 
             // tabConfig
@@ -309,7 +327,7 @@
             this.tabConfig.Location = new System.Drawing.Point(4, 22);
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfig.Size = new System.Drawing.Size(565, 321);
+            this.tabConfig.Size = new System.Drawing.Size(569, 330);
             this.tabConfig.TabIndex = 6;
             this.tabConfig.Text = "Config";
             this.tabConfig.UseVisualStyleBackColor = true;
@@ -345,12 +363,85 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "   ";
             // 
-            // loadToolStripMenuItem
+            // tabLogs
             // 
-            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(198, 24);
-            this.loadToolStripMenuItem.Text = "Load";
-            this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
+            this.tabLogs.Controls.Add(this.bExport);
+            this.tabLogs.Controls.Add(this.bSetDatagrid);
+            this.tabLogs.Controls.Add(this.lNbEvent);
+            this.tabLogs.Controls.Add(this.lFilter);
+            this.tabLogs.Controls.Add(this.cmbNbEv);
+            this.tabLogs.Controls.Add(this.cmbFilter);
+            this.tabLogs.Controls.Add(this.dataGridViewLog);
+            this.tabLogs.Location = new System.Drawing.Point(4, 22);
+            this.tabLogs.Name = "tabLogs";
+            this.tabLogs.Padding = new System.Windows.Forms.Padding(3);
+            this.tabLogs.Size = new System.Drawing.Size(569, 330);
+            this.tabLogs.TabIndex = 7;
+            this.tabLogs.Text = "Logs";
+            this.tabLogs.UseVisualStyleBackColor = true;
+            // 
+            // dataGridViewLog
+            // 
+            this.dataGridViewLog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewLog.Location = new System.Drawing.Point(6, 6);
+            this.dataGridViewLog.Name = "dataGridViewLog";
+            this.dataGridViewLog.RowHeadersWidth = 45;
+            this.dataGridViewLog.Size = new System.Drawing.Size(553, 224);
+            this.dataGridViewLog.TabIndex = 0;
+            // 
+            // cmbFilter
+            // 
+            this.cmbFilter.FormattingEnabled = true;
+            this.cmbFilter.Location = new System.Drawing.Point(159, 246);
+            this.cmbFilter.Name = "cmbFilter";
+            this.cmbFilter.Size = new System.Drawing.Size(78, 21);
+            this.cmbFilter.TabIndex = 1;
+            // 
+            // cmbNbEv
+            // 
+            this.cmbNbEv.FormattingEnabled = true;
+            this.cmbNbEv.Location = new System.Drawing.Point(159, 287);
+            this.cmbNbEv.Name = "cmbNbEv";
+            this.cmbNbEv.Size = new System.Drawing.Size(78, 21);
+            this.cmbNbEv.TabIndex = 2;
+            // 
+            // lFilter
+            // 
+            this.lFilter.AutoSize = true;
+            this.lFilter.Location = new System.Drawing.Point(23, 251);
+            this.lFilter.Name = "lFilter";
+            this.lFilter.Size = new System.Drawing.Size(40, 15);
+            this.lFilter.TabIndex = 3;
+            this.lFilter.Text = "Filter :";
+            // 
+            // lNbEvent
+            // 
+            this.lNbEvent.AutoSize = true;
+            this.lNbEvent.Location = new System.Drawing.Point(23, 287);
+            this.lNbEvent.Name = "lNbEvent";
+            this.lNbEvent.Size = new System.Drawing.Size(81, 15);
+            this.lNbEvent.TabIndex = 4;
+            this.lNbEvent.Text = "Nb of Events :";
+            // 
+            // bSetDatagrid
+            // 
+            this.bSetDatagrid.Location = new System.Drawing.Point(324, 240);
+            this.bSetDatagrid.Name = "bSetDatagrid";
+            this.bSetDatagrid.Size = new System.Drawing.Size(131, 35);
+            this.bSetDatagrid.TabIndex = 5;
+            this.bSetDatagrid.Text = "Refresh Datagrid";
+            this.bSetDatagrid.UseVisualStyleBackColor = true;
+            this.bSetDatagrid.Click += new System.EventHandler(this.bSetDatagrid_Click);
+            // 
+            // bExport
+            // 
+            this.bExport.Location = new System.Drawing.Point(324, 287);
+            this.bExport.Name = "bExport";
+            this.bExport.Size = new System.Drawing.Size(131, 33);
+            this.bExport.TabIndex = 6;
+            this.bExport.Text = "Export CSV";
+            this.bExport.UseVisualStyleBackColor = true;
+            this.bExport.Click += new System.EventHandler(this.bExport_Click);
             // 
             // Form1
             // 
@@ -376,6 +467,9 @@
             this.tabIndex.ResumeLayout(false);
             this.tabConfig.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tabLogs.ResumeLayout(false);
+            this.tabLogs.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLog)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -413,6 +507,14 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dataGridView3;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
+        private System.Windows.Forms.TabPage tabLogs;
+        private System.Windows.Forms.Button bExport;
+        private System.Windows.Forms.Button bSetDatagrid;
+        private System.Windows.Forms.Label lNbEvent;
+        private System.Windows.Forms.Label lFilter;
+        private System.Windows.Forms.ComboBox cmbNbEv;
+        private System.Windows.Forms.ComboBox cmbFilter;
+        private System.Windows.Forms.DataGridView dataGridViewLog;
     }
 }
 

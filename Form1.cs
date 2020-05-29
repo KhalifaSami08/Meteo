@@ -29,6 +29,19 @@ namespace Meteo
         private List<Measure> myMeasuresConfigured; //measures
         private List<Alarm> myAlarm;//alarms
 
+
+        /**
+        * 
+        * DEBUT Code Examen Collection(reste voir bas de page)
+        * 
+        */
+        private List<Log> myLogs;
+        /*
+         * 
+         * FIN CODE Examen Collection
+         * 
+         */
+
         public Form1()
         {
             InitializeComponent();
@@ -42,7 +55,7 @@ namespace Meteo
             myAlarm = new List<Alarm>();
             myIdSysMeasures = new List<IdSys>();
 
-            user = new User(0, "12345");
+            user = new User(0);
 
             createorRefreshGrid = new CreateorRefreshGrid();
             ID = 0;
@@ -55,7 +68,20 @@ namespace Meteo
             setRightLayout();
             catchAllUsers();
 
-            tabIndex.SelectTab(tabConfig);
+            tabIndex.SelectTab(tabLogs);
+
+            /**
+             * 
+             * DEBUT Code Examen INIT
+             * 
+             */
+            myLogs = new List<Log>();
+            initExamValues();
+            /*
+             * 
+             * FIN CODE EXAM INIT
+             * 
+             */
         }
 
         //Enable or Disable toolStripMenu 
@@ -118,7 +144,7 @@ namespace Meteo
 
                 while (dataReader.Read())
                 {
-                    myUsers.Add( new User( dataReader[1].ToString(), dataReader[2].ToString(), Int32.Parse(dataReader[3].ToString())) );
+                    myUsers.Add(new User(dataReader[1].ToString(), dataReader[2].ToString(), Int32.Parse(dataReader[3].ToString())));
                 }
 
                 dbConnection.Close();
@@ -142,22 +168,72 @@ namespace Meteo
                     {
                         user = userForm.myUser;
                         setRightLayout();
+
                     }
                 }
+
+                /*
+                * 
+                * EXAM DEBUT Connect USER
+                * 
+                */
+
+                Log l = new Log("User", "Connection de user : " + user.userName + "! ");
+                Console.WriteLine("Log crée : " + l.logDescription);
+                AddlogToDatabase(l);
+
+                /*
+                 * 
+                 * EXAM FIN Connect USER
+                 * 
+                 */
             }
         }
         private void createNewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CreateUser cu = new CreateUser(myUsers);
             cu.ShowDialog();
+
             user = cu.u;
             setRightLayout();
+
+            /*
+            * 
+            * EXAM DEBUT ADD USER
+            * 
+            */
+
+            Log l = new Log("User", "Nouvel User Crée ! Nom : " + cu.u.userName + ", Clé Accés : " + cu.u.userAcess.accessKeyId);
+            Console.WriteLine("Log crée : " + l.logDescription);
+            AddlogToDatabase(l);
+
+            /*
+             * 
+             * EXAM FIN ADD USER
+             * 
+             */
         }
 
         private void removeUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RemoveUser rm = new RemoveUser(myUsers);
             rm.ShowDialog();
+
+            /*
+            * 
+            * EXAM DEBUT REMOVE USER
+            * 
+            */
+
+            Log l = new Log("User", " Utilisateur '" + rm.userName + "' a été supprimé ! ");
+            Console.WriteLine("Log crée : " + l.logDescription);
+            AddlogToDatabase(l);
+
+            /*
+             * 
+             * EXAM FIN REMOVE USER
+             * 
+             */
         }
 
         private void bOnOff_Click(object sender, EventArgs e)
@@ -244,11 +320,6 @@ namespace Meteo
 
         }
 
-        private void bConfig_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void configClick(int id)
         {
 
@@ -279,9 +350,25 @@ namespace Meteo
                         Measure m = new Measure(w.id, w.type_Measure, w.format, f.iMin, f.iMax);
                         myMeasuresConfigured.Add(m);
 
+                        /*
+                         * 
+                         * EXAM DEBUT ADD LOG CONFIG
+                         * 
+                         */
+
+                        Log l = new Log("Id", "Nouvel Id Crée ! Id : " + w.id);
+                        Console.WriteLine("Log crée : " + l.logDescription);
+                        AddlogToDatabase(l);
+
+                        /*
+                         * 
+                         * EXAM FIN ADD LOG CONFIG 
+                         * 
+                         */
+
                         for (int i = 0; i < myWatchdogs.Count; i++)
                         {
-                            if(w.id == myWatchdogs[i].id)
+                            if (w.id == myWatchdogs[i].id)
                             {
                                 myWatchdogs[i] = m;
                             }
@@ -445,7 +532,7 @@ namespace Meteo
             pf.ShowDialog();
 
         }
-       
+
 
         private void configToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -493,7 +580,23 @@ namespace Meteo
                         }
 
                     }
+                    /*
+                    * 
+                    * EXAM DEBUT REMOVE LOG DISCONFIG
+                    * 
+                    */
+
+                    Log l = new Log("Id", "Nouvel Id Supprimé (DisConfig) ! ID : " + myWatchdogs[pos].id);
+                    Console.WriteLine("Log crée : " + l.logDescription);
+                    AddlogToDatabase(l);
+
+                    /*
+                     * 
+                     * EXAM FIN REMOVE LOG DISCONFIG
+                     * 
+                     */
                     myWatchdogs.RemoveAt(pos);
+
                 }
             }
             else
@@ -538,10 +641,31 @@ namespace Meteo
                 if (f.valid)
                 {
                     myAlarm.Add(f.A);
+
+                    /**
+                     * 
+                     * Exam DEBUT Ajout de Logs Alarm
+                     * 
+                     */
+
+                    Log l = new Log("Alarm", "Nouvelle Alarme crée - ID : " + f.A.id_Alarme + ", Min : " + f.A.minAlarm + ", Max : " + f.A.maxAlarm);
+                    Console.WriteLine("Log crée : " + l.logDescription);
+                    AddlogToDatabase(l);
+
+                    /**
+                     * 
+                     * Exam FIN Ajout de Logs Alarm
+                     * 
+                     */
+
                     createOrReffreshGridMeasure();
                     if (!timerMeasure.Enabled)
                     {
                         timerMeasure.Start();
+                    }
+                    foreach (Alarm a in myAlarm)
+                    {
+                        cmbIdGraph.Items.Add(a.id_Alarme);
                     }
                 }
             }
@@ -572,9 +696,9 @@ namespace Meteo
                 {
                     Alarm a = null;
 
-                    foreach(Alarm al in myAlarm)
+                    foreach (Alarm al in myAlarm)
                     {
-                        if(al.id_Alarme == m.id)
+                        if (al.id_Alarme == m.id)
                         {
                             a = al;
                         }
@@ -583,7 +707,7 @@ namespace Meteo
                     sw.Write(m.id + ";");
                     sw.Write(m.type_Measure + ";");
                     sw.Write(m.format + ";");
-                    
+
                     sw.Write(m.minValue + ";");
                     sw.Write(m.maxValue + ";");
 
@@ -617,9 +741,9 @@ namespace Meteo
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             String file = "C:\\Users\\mklfs\\source\\repos\\Meteo\\Meteo\\Files\\FILELOG.csv";
-                myWatchdogs.Clear();
-                myMeasuresConfigured.Clear();
-                myAlarm.Clear();
+            myWatchdogs.Clear();
+            myMeasuresConfigured.Clear();
+            myAlarm.Clear();
 
             try
             {
@@ -629,7 +753,7 @@ namespace Meteo
                     String[] tab;
                     Console.WriteLine(sr.ReadLine());
                     Console.WriteLine(sr.ReadLine());
-                    
+
 
                     while ((line = sr.ReadLine()) != null)
                     {
@@ -658,6 +782,217 @@ namespace Meteo
             }
         }
 
-        
+        /***
+         * 
+         * CODE EXAMEN DEBUT
+         * 
+         */
+
+        private void initExamValues() //methode appelée dans le form_load
+        {
+            object[] itemsCmbEvValues = { 5, 10, 25, 50 };
+            cmbNbEv.Items.AddRange(itemsCmbEvValues);
+            cmbNbEv.SelectedItem = itemsCmbEvValues[0];
+            cmbNbEv.DropDownStyle = ComboBoxStyle.DropDownList;
+
+
+            object[] itemsFilterValues = { "No Filter", "User", "Id", "Alarm" };
+            cmbFilter.Items.AddRange(itemsFilterValues);
+            cmbFilter.SelectedItem = itemsFilterValues[0];
+            cmbFilter.DropDownStyle = ComboBoxStyle.DropDownList;
+
+
+            reqSelectInit();
+            CreateOrReffreshDatagridLog();
+
+        }
+
+        private void dbLogConnectExam(string req, int param) //je fais le select et le insert dans la même methode
+        {
+            string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\mklfs\\source\\repos\\Meteo\\Meteo\\Files\\DB_Logs.accdb;Cache Authentication=True";
+            OleDbConnection dbConnection = new OleDbConnection(connectionString);
+
+            try //Gestion d'Erreurs
+            {
+
+                dbConnection.Open();
+
+                OleDbCommand dbCommand = new OleDbCommand(req, dbConnection);
+                OleDbDataReader dataReader = dbCommand.ExecuteReader();
+
+                if (param == 0) //0 = requete select
+                {
+                    while (dataReader.Read())
+                    {
+                        myLogs.Add(new Log(Int32.Parse(dataReader[0].ToString()), dataReader[1].ToString(), dataReader[2].ToString(), dataReader[3].ToString()));
+                        Console.WriteLine("Ref : " + dataReader[0].ToString());
+                    }
+                }
+                else if (param == 1) //requete insert
+                {
+                    Console.WriteLine(req + " insert Succefully \n");
+                }
+                else
+                {
+                    throw new Exception("Oups, ce paramétre n'existe pas pourla BDD ! ");
+                }
+
+
+                dbConnection.Close();
+                /*
+                * Note : j'utilise les fermetures de bdd ainsi que des collections pour travailler en mode déconnecté 
+                */
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show("Error Command !" + exc.Message);
+            }
+        }
+
+        private void reqSelectInit()
+        {
+            string req = "SELECT * FROM LogsTable";
+            dbLogConnectExam(req, 0);
+
+        }
+
+        private void reqSelectFilter(string filter)
+        {
+            myLogs.Clear();
+            string req = "SELECT * FROM LogsTable WHERE LogType = '" + filter + "'";
+            dbLogConnectExam(req, 0);
+        }
+
+        private void AddlogToDatabase(Log l)
+        {
+            l.logRef = myLogs.Count;
+            myLogs.Add(l);
+            string req = "INSERT INTO LogsTable(LogDate,LogType,LogDescription) VALUES ('" + l.logDate + "','" + l.logType + "','" + l.logDescription + "');";
+            dbLogConnectExam(req, 1);
+        }
+
+        //REFRESH DATAGRID
+        private void CreateOrReffreshDatagridLog()
+        {
+            int CELL_SIZE = 140; //Pour l'affichage
+            int nb_COLConf = 4;
+
+            //Quelques AJUSTEMENTS
+            dataGridViewLog.RowHeadersVisible = false;
+            dataGridViewLog.AllowUserToResizeColumns = false;
+            dataGridViewLog.AllowUserToResizeRows = false;
+            dataGridViewLog.ScrollBars = ScrollBars.None;
+
+            DataTable dt = new DataTable();
+            dataGridViewLog.DataSource = dt;
+
+            //Crée Columns et Rows
+            for (int i = 0; i < nb_COLConf; i++)
+            {
+                dt.Columns.Add();
+            }
+
+            foreach (Log l in myLogs)
+            {
+
+                String[] s = new string[4];
+                s[0] = l.logRef.ToString();
+                s[1] = l.logDate;
+                s[2] = l.logType;
+                s[3] = l.logDescription;
+
+                dt.Rows.Add(s);
+            }
+            dataGridViewLog.Columns[0].HeaderText = "Ref";
+            dataGridViewLog.Columns[1].HeaderText = "Date";
+            dataGridViewLog.Columns[2].HeaderText = "Measurement TYPE";
+            dataGridViewLog.Columns[3].HeaderText = "Description";
+
+            //Displaying
+            for (int i = 0; i < nb_COLConf; i++)
+            {
+                dataGridViewLog.Columns[i].Width = CELL_SIZE;
+            }
+
+            dataGridViewLog.Width = nb_COLConf * CELL_SIZE;
+        }
+
+        //BUTTON DATAGRID REFRESH
+        private void bSetDatagrid_Click(object sender, EventArgs e)
+        {
+            //Filter
+            string valCmbFiler = cmbFilter.SelectedItem.ToString();
+            if (valCmbFiler.Equals("No Filter"))
+            {
+                reqSelectInit();
+            }
+            else
+            {
+                reqSelectFilter(valCmbFiler);
+            }
+
+            //NbEvents
+            int nbEvents = 0;
+            Int32.TryParse(cmbNbEv.SelectedItem.ToString(), out nbEvents);
+            
+            while (myLogs.Count> nbEvents)
+            {
+                myLogs.RemoveAt(0);
+            }
+
+            CreateOrReffreshDatagridLog();
+        }
+
+        //EXPORT CSV
+        private void bExport_Click(object sender, EventArgs e)
+        {
+            if (myLogs.Count == 0)
+            {
+                MessageBox.Show("Logs List is Empty ! ");
+            }
+            else
+            {
+                String file = "C:\\Users\\mklfs\\source\\repos\\Meteo\\Meteo\\Files\\FILELOG_EXAM.csv"; //pas confondre avec FileLog qui est mon export de mes alarmes de base
+                using (StreamWriter sw = new StreamWriter(file))
+                {
+                    try //Gestion d'erreur part 2
+                    {
+                        sw.Write("Ref : ;");
+                        sw.Write("Date : ;");
+                        sw.Write("Type : ;");
+                        sw.Write("Description : ;\n\n");
+
+                        foreach (Log l in myLogs)
+                        {
+
+                            sw.Write(l.logRef + ";");
+                            sw.Write(l.logDate + ";");
+                            sw.Write(l.logType + ";");
+                            sw.Write(l.logDescription + ";");
+
+                            sw.Write("\n");
+
+                        }
+                        MessageBox.Show("File created succesfully ! ");
+                        sw.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("The file could not be Written :");
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+            }
+        }
+
+
+
+
+        /***
+         * 
+         * CODE EXAMEN FIN
+         * 
+         */
+
     }
 }

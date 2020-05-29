@@ -102,6 +102,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="IdSys.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Measure.cs" />
     <Compile Include="ConfigMeasureForm.cs">
       <SubType>Form</SubType>
